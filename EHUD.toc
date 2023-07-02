@@ -29,3 +29,4 @@ UnitFrame.lua
 PlayerFrame.lua
 TargetFrame.lua
 EnhancedMythicPlus.lua
+FineTuneHUD.lua

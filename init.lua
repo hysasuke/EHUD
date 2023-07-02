@@ -115,6 +115,18 @@ EHUD.options = {
                     set = "setEMPEnabled",
                 },
             }
+        },
+        fineTuneHUD = {
+            type = "group",
+            name = L["fineTuneHUD"],
+            args = {
+                toggle = {
+                    type = "toggle",
+                    name = L["enable"],
+                    get = "isFineTuneHUDEnabled",
+                    set = "setFineTuneHUDEnabled",
+                },
+            }
         }
     }
 }
@@ -147,6 +159,9 @@ local defaultConfigs = {
         enhancedMythicPlusDisplay = {
             enable = true
         },
+        fineTuneHUD = {
+            enable = true
+        }
     }
 }
 
@@ -194,6 +209,7 @@ function EHUD:OnInitialize()
     core.BT:Initialize()
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
     SetFrameMovable(_G["SettingsPanel"])
+    core.FineTune:Initialize()
 end
 
 function EHUD:isEditMode()
@@ -225,4 +241,13 @@ end
 
 function EHUD:setEMPEnabled(info, value)
     EHUD.db.profile.enhancedMythicPlusDisplay.enable = value
+end
+
+function EHUD:isFineTuneHUDEnabled()
+    return EHUD.db.profile.fineTuneHUD.enable
+end
+
+function EHUD:setFineTuneHUDEnabled(info, value)
+    EHUD.db.profile.fineTuneHUD.enable = value
+    core.FineTune:Toggle(value)
 end

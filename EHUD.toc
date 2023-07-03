@@ -5,7 +5,8 @@
 ## Version: v0.0.1
 ## SavedVariables: EHUDDB 
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibSink-2.0, LibDualSpec-1.0
-# X-Curse-Project-ID: 871542
+## IconTexture: Interface\AddOns\EHUD\assets\EHUD
+## X-Curse-Project-ID: 883732 
 
 Libs\Ace3\LibStub\LibStub.lua
 Libs\Ace3\CallbackHandler-1.0\CallbackHandler-1.0.xml

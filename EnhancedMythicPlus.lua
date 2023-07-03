@@ -5,7 +5,7 @@ local pveFrame = _G["PVEFrame"];
 
 local function generateRewardDetails(frame)
     local rewardDetails = GetCurrentWeekRewardDetails();
-    local container = CreateFrame("Frame", nil, frame);
+    local container = frame.rewardsDetailFrame or CreateFrame("Frame", nil, frame);
     container:SetSize(100, 100)
     container:Hide();
     for key, value in pairs(rewardDetails) do
@@ -23,7 +23,7 @@ end
 
 local function generateTeleportButton(frame, challengeModeID)
     -- print("generateTeleportButton")
-    local button = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate");
+    local button = frame.teleportButton or CreateFrame("Button", nil, frame, "SecureActionButtonTemplate");
     local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
     local spellName = GetSpellInfo(spellID);
     local spellKnown = IsSpellKnown(spellID);
@@ -133,9 +133,7 @@ pveFrame:HookScript("OnUpdate", function(self)
             challengesFrame:HookScript("OnUpdate", mythicPlusFrameOnShow)
             challengesFrame.scriptSetUp = true;
         end
-        if not challengesFrame.rewardsDetailFrame then
-            challengesFrame.rewardsDetailFrame = generateRewardDetails(challengesFrame);
-        end
+        challengesFrame.rewardsDetailFrame = generateRewardDetails(challengesFrame);
         challengesFrame.rewardsDetailFrame:SetPoint("TOPLEFT", challengesFrame, "TOPLEFT", 20, -30);
         challengesFrame.rewardsDetailFrame:Show();
     end

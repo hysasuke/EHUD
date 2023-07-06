@@ -31,3 +31,4 @@ PlayerFrame.lua
 TargetFrame.lua
 EnhancedMythicPlus.lua
 FineTuneHUD.lua
+EnhancedChat.lua

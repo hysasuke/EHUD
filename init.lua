@@ -212,6 +212,12 @@ function EHUD:OnInitialize()
     core.FineTune:Initialize()
 end
 
+SLASH_EHUDOPTIONS1 = '/ehud';
+function SlashCmdList.EHUDOPTIONS(msg, editBox)
+    InterfaceOptionsFrame_OpenToCategory("EHUD");
+    InterfaceOptionsFrame_OpenToCategory("EHUD");
+end
+
 function EHUD:isEditMode()
     return core.isEditMode
 end

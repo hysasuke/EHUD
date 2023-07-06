@@ -1,4 +1,5 @@
 local L = LibStub("AceLocale-3.0"):NewLocale("EHUD", "zhCN")
+if not L then return end
 
 L["editMode"] = "编辑模式"
 L["editModeDesc"] = "切换编辑模式。"

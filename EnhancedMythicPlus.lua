@@ -24,11 +24,12 @@ end
 local function generateTeleportButton(frame, challengeModeID)
     -- print("generateTeleportButton")
     local button = frame.teleportButton or CreateFrame("Button", nil, frame, "SecureActionButtonTemplate");
-    local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
-    local spellName = GetSpellInfo(spellID);
-    local spellKnown = IsSpellKnown(spellID);
+
     if (not button.SetBackdrop) then Mixin(button, BackdropTemplateMixin) end
     button:HookScript("OnUpdate", function()
+        local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
+        local spellName = GetSpellInfo(spellID);
+        local spellKnown = IsSpellKnown(spellID);
         local colors = {
             known = { r = 0, g = 1, b = 0, a = 1 },
             unkown = { r = 0.5, g = 0.5, b = 0.5, a = 1 },

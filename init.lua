@@ -65,7 +65,7 @@ EHUD.options = {
                     type = "execute",
                     name = L["add"],
                     func = function()
-                        local newTrackerIndex = #EHUD.db.profile.buffTracker.trackers + 1
+                        local newTrackerIndex = #EHUD.db.class.buffTracker.trackers + 1
                         core.BT:CreateTrackerFrame(newTrackerIndex, true)
                     end,
                 },
@@ -162,6 +162,11 @@ local defaultConfigs = {
         fineTuneHUD = {
             enable = true
         }
+    },
+    class = {
+        buffTracker = {
+            trackers = {}
+        },
     }
 }
 
@@ -179,7 +184,7 @@ function SaveFramePoints(frame, type, name)
             containerHeight = frame:GetHeight(),
         }
     elseif type == "buffTracker" then
-        EHUD.db.profile.buffTracker.trackers[name] = {
+        EHUD.db.class.buffTracker.trackers[name] = {
             point = point,
             relativePoint = relativePoint,
             xOfs = xOfs,
@@ -210,6 +215,11 @@ function EHUD:OnInitialize()
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
     SetFrameMovable(_G["SettingsPanel"])
     core.FineTune:Initialize()
+
+    -- Copy buffTracker Data from profile to class
+    if self.db.profile.buffTracker then
+        self.db.class.buffTracker = self.db.profile.buffTracker
+    end
 end
 
 SLASH_EHUDOPTIONS1 = '/ehud';

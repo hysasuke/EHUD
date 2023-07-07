@@ -7,7 +7,7 @@ local BT = core.BT;
 
 BT.iconFrames = {};
 
-local buffTrackers = EHUD.db and EHUD.db.profile.buffTracker.trackers or {}
+local buffTrackers = EHUD.db and EHUD.db.class.buffTracker.trackers or {}
 
 local totalNumberOfTrackers = math.floor(dimensions.width / iconDimensions.width);
 local function HandleOptions(index)
@@ -50,8 +50,8 @@ local function HandleOptions(index)
                     width = 1,
                     order = 2,
                     values = {
-                        target = "Target",
-                        player = "Player"
+                        target = L["target"],
+                        player = L["player"]
                     },
                     get = function()
                         return tracker["trackingBuffs"][i] and tracker["trackingBuffs"][i]["unit"] or "player"
@@ -85,7 +85,7 @@ local function HandleOptions(index)
     end
     EHUD.options.args.buffTrackerSettings.args["buffTracker" .. index] = {
         type = "group",
-        name = "Buff Tracker " .. index,
+        name = L["buffTracker"] .. index,
         childGroups = "select",
         args = args
     }
@@ -100,7 +100,7 @@ local function HandleOptions(index)
 end
 
 function BT:CreateTrackerFrame(trackerIndex, savingTable)
-    local points = EHUD.db.profile["buffTracker"]["trackers"]["tracker" .. trackerIndex] or nil
+    local points = EHUD.db.class["buffTracker"]["trackers"]["tracker" .. trackerIndex] or nil
     local containerFrame = CreateFrame("Frame", "buffTrackerFrame" .. trackerIndex, UIParent);
     containerFrame.iconFrames = {};
     containerFrame:SetSize(dimensions.width, dimensions.height);
@@ -264,7 +264,7 @@ function BT:OnUpdateHandler(trackerIndex)
 end
 
 function BT:Initialize()
-    buffTrackers = EHUD.db.profile.buffTracker.trackers;
+    buffTrackers = EHUD.db.class.buffTracker.trackers;
     for i = 1, #buffTrackers do
         BT:CreateTrackerFrame(i, false);
     end

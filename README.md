@@ -1,5 +1,4 @@
-![EHUD](https://media.forgecdn.net/attachments/688/604/ehud.jpg "EHUD")
-
+![EHUD](https://github.com/hysasuke/EHUD/assets/19693290/0d18002e-1d46-4c19-8281-600c5a40717c)
 # Enhanced HUD (EHUD)
 
  

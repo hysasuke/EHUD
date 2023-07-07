@@ -48,6 +48,8 @@ local function generateTeleportButton(frame, challengeModeID)
             edgeSize = 1,
             insets = { left = 1, right = 1, top = 1, bottom = 1 },
         }
+        button:SetAttribute("type", "spell");
+        button:SetAttribute("spell", spellName);
         button:SetBackdrop(button.backdrop)
         button:SetBackdropBorderColor(displayColor.r, displayColor.g, displayColor.b, displayColor.a)
     end)
@@ -55,8 +57,7 @@ local function generateTeleportButton(frame, challengeModeID)
 
 
     button:SetAllPoints(frame);
-    button:SetAttribute("type", "spell");
-    button:SetAttribute("spell", spellName);
+
     button:RegisterForClicks("LeftButtonUp", "LeftButtonDown")
     button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD");
     return button;

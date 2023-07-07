@@ -92,18 +92,18 @@ EHUD.options = {
 
             }
         },
-        durabilityDisplay = {
-            type = "group",
-            name = L["durabilityDisplay"],
-            args = {
-                toggle = {
-                    type = "toggle",
-                    name = L["enable"],
-                    get = "isDurabilityDisplayEnabled",
-                    set = "setDurabilityDisplayEnabled",
-                },
-            }
-        },
+        -- durabilityDisplay = {
+        --     type = "group",
+        --     name = L["durabilityDisplay"],
+        --     args = {
+        --         toggle = {
+        --             type = "toggle",
+        --             name = L["enable"],
+        --             get = "isDurabilityDisplayEnabled",
+        --             set = "setDurabilityDisplayEnabled",
+        --         },
+        --     }
+        -- },
         enhancedMythicPlusDisplay = {
             type = "group",
             name = L["enhancedMythicPlusDisplay"],
@@ -153,9 +153,9 @@ local defaultConfigs = {
         buffTracker = {
             trackers = {}
         },
-        durabilityDisplay = {
-            enable = true
-        },
+        -- durabilityDisplay = {
+        --     enable = true
+        -- },
         enhancedMythicPlusDisplay = {
             enable = true
         },
@@ -206,6 +206,11 @@ local function handleFramePoints()
     end
 end
 
+function MoveBuiltInFramesMovable()
+    SetFrameMovable(_G["SettingsPanel"])
+    SetFrameMovable(_G["CharacterFrame"])
+end
+
 function EHUD:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("EHUDDB", defaultConfigs, true)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("EHUD", EHUD.options)
@@ -213,13 +218,13 @@ function EHUD:OnInitialize()
     handleFramePoints();
     core.BT:Initialize()
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
-    SetFrameMovable(_G["SettingsPanel"])
+    MoveBuiltInFramesMovable()
     core.FineTune:Initialize()
 
-    -- Copy buffTracker Data from profile to class
-    if self.db.profile.buffTracker then
-        self.db.class.buffTracker = self.db.profile.buffTracker
-    end
+    -- -- Copy buffTracker Data from profile to class
+    -- if self.db.profile.buffTracker then
+    --     self.db.class.buffTracker = self.db.profile.buffTracker
+    -- end
 end
 
 SLASH_EHUDOPTIONS1 = '/ehud';
@@ -243,13 +248,13 @@ function EHUD:setEditMode(info, value)
     end
 end
 
-function EHUD:isDurabilityDisplayEnabled()
-    return EHUD.db.profile.durabilityDisplay.enable
-end
+-- function EHUD:isDurabilityDisplayEnabled()
+--     return EHUD.db.profile.durabilityDisplay.enable
+-- end
 
-function EHUD:setDurabilityDisplayEnabled(info, value)
-    EHUD.db.profile.durabilityDisplay.enable = value
-end
+-- function EHUD:setDurabilityDisplayEnabled(info, value)
+--     EHUD.db.profile.durabilityDisplay.enable = value
+-- end
 
 function EHUD:isEMPEnabled()
     return EHUD.db.profile.enhancedMythicPlusDisplay.enable

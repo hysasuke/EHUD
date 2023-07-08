@@ -160,6 +160,9 @@
         "DEFLECT",
         "ABSORB",
         "REFLECT",
-        "COMBAT_TEXT_BLOCK_REDUCED"
+        "COMBAT_TEXT_BLOCK_REDUCED",
+        "RGBToColorCode",
+        "CharacterFrameInsetRight",
+        "InterfaceOptionsFrame_OpenToCategory"
     ]
 }

@@ -4,6 +4,7 @@ EHUD = LibStub("AceAddon-3.0"):NewAddon("EHUD", "AceConsole-3.0", "AceEvent-3.0"
 local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 core.UF = {}
 core.BT = {}
+core.IDD = {}
 core.config = {};
 core.config.dimensions = {
     playerFrame = {
@@ -218,9 +219,8 @@ function EHUD:OnInitialize()
     handleFramePoints();
     core.BT:Initialize()
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
-    MoveBuiltInFramesMovable()
-    core.FineTune:Initialize()
-
+    MoveBuiltInFramesMovable();
+    core.FineTune:Initialize();
     -- -- Copy buffTracker Data from profile to class
     -- if self.db.profile.buffTracker then
     --     self.db.class.buffTracker = self.db.profile.buffTracker

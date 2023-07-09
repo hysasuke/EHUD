@@ -20,7 +20,6 @@ function IDD:CreateStatScrollFrame()
     StatScrollFrame:ClearAllPoints()
     StatScrollFrame:SetPoint("TOPLEFT", CharacterFrameInsetRight, "TOPLEFT", 5, -6)
     StatScrollFrame:SetPoint("BOTTOMRIGHT", CharacterFrameInsetRight, "BOTTOMRIGHT", 0, 3)
-
     StatScrollFrame.ScrollBar:ClearAllPoints()
     StatScrollFrame.ScrollBar:SetParent(StatScrollFrame)
     StatScrollFrame.ScrollBar:SetPoint("TOPLEFT", StatScrollFrame, "TOPRIGHT", -16, -16)
@@ -31,11 +30,15 @@ function IDD:CreateStatScrollFrame()
     end)
 
     local StatFrame = CreateFrame("Frame", nil, StatScrollFrame)
-    StatFrame:SetSize(191, characterStatsPane:GetHeight())
+    -- StatFrame:SetSize(191, characterStatsPane:GetHeight())
     StatFrame:SetPoint("TOPLEFT", StatScrollFrame, "TOPLEFT", 0, 0)
     StatScrollFrame:SetScrollChild(StatFrame)
 
     characterStatsPane:SetParent(StatFrame);
+
+    characterStatsPane:HookScript("OnShow", function(self)
+        StatFrame:SetSize(191, characterStatsPane:GetHeight() or 355)
+    end)
 
     -- Create durablity category
     local itemLevelFrame = characterStatsPane.ItemLevelCategory;

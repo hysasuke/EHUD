@@ -93,18 +93,18 @@ EHUD.options = {
 
             }
         },
-        -- durabilityDisplay = {
-        --     type = "group",
-        --     name = L["durabilityDisplay"],
-        --     args = {
-        --         toggle = {
-        --             type = "toggle",
-        --             name = L["enable"],
-        --             get = "isDurabilityDisplayEnabled",
-        --             set = "setDurabilityDisplayEnabled",
-        --         },
-        --     }
-        -- },
+        durabilityDisplay = {
+            type = "group",
+            name = L["durabilityDisplay"],
+            args = {
+                toggle = {
+                    type = "toggle",
+                    name = L["enable"],
+                    get = "isDurabilityDisplayEnabled",
+                    set = "setDurabilityDisplayEnabled",
+                },
+            }
+        },
         enhancedMythicPlusDisplay = {
             type = "group",
             name = L["enhancedMythicPlusDisplay"],
@@ -248,13 +248,14 @@ function EHUD:setEditMode(info, value)
     end
 end
 
--- function EHUD:isDurabilityDisplayEnabled()
---     return EHUD.db.profile.durabilityDisplay.enable
--- end
+function EHUD:isDurabilityDisplayEnabled()
+    return EHUD.db.profile.durabilityDisplay.enable
+end
 
--- function EHUD:setDurabilityDisplayEnabled(info, value)
---     EHUD.db.profile.durabilityDisplay.enable = value
--- end
+function EHUD:setDurabilityDisplayEnabled(info, value)
+    EHUD.db.profile.durabilityDisplay.enable = value
+    core.IDD:ToggleDurabilityFrame(value)
+end
 
 function EHUD:isEMPEnabled()
     return EHUD.db.profile.enhancedMythicPlusDisplay.enable

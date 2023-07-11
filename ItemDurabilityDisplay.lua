@@ -13,6 +13,19 @@ frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 -- durabilityText:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
 
 local characterStatsPane = _G["CharacterStatsPane"];
+function IDD:ToggleDurabilityFrame(value)
+    if (value) then
+        characterStatsPane:SetParent(IDD.ScrollFrame.statFrame)
+        characterStatsPane.ItemLevelCategory:SetPoint("TOP", characterStatsPane.ItemDurabilityCategory.DurabilityFrame,
+            "BOTTOM", 0, 0);
+
+        characterStatsPane.ItemDurabilityCategory:Show();
+    else
+        characterStatsPane.ItemDurabilityCategory:Hide();
+        characterStatsPane:SetParent(_G["CharacterFrame"])
+        characterStatsPane.ItemLevelCategory:SetPoint("TOP", characterStatsPane, "TOP", 0, 0);
+    end
+end
 
 function IDD:CreateStatScrollFrame()
     -- Create scroll view
@@ -30,6 +43,7 @@ function IDD:CreateStatScrollFrame()
     end)
 
     local StatFrame = CreateFrame("Frame", nil, StatScrollFrame)
+    StatScrollFrame.statFrame = StatFrame;
     -- StatFrame:SetSize(191, characterStatsPane:GetHeight())
     StatFrame:SetPoint("TOPLEFT", StatScrollFrame, "TOPLEFT", 0, 0)
     StatScrollFrame:SetScrollChild(StatFrame)
@@ -67,11 +81,6 @@ function IDD:CreateStatScrollFrame()
         itemDurabilityCategory.DurabilityFrame.Label:SetText(percentage .. "%");
         itemDurabilityCategory.DurabilityFrame.Label:SetTextColor(color.r, color.g, color.b, 1);
         -- durabilityText:SetTextColor(color.r, color.g, color.b, 1);
-        -- if characterFrame.selectedTab == 1 and EHUD.db.profile.durabilityDisplay.enable then
-        --     durabilityText:Show();
-        -- else
-        --     durabilityText:Hide();
-        -- end
     end)
 
     -- Setup tooltip to display every item's durability
@@ -94,12 +103,14 @@ function IDD:CreateStatScrollFrame()
         end
         GameTooltip:Show();
     end)
+    return StatScrollFrame;
 end
 
 frame:SetScript("OnEvent", function(self, event, ...)
     if (event == "PLAYER_ENTERING_WORLD") then
         self:UnregisterEvent("PLAYER_ENTERING_WORLD");
-        IDD:CreateStatScrollFrame();
+        IDD.ScrollFrame = IDD:CreateStatScrollFrame();
+        IDD:ToggleDurabilityFrame(EHUD.db.profile.durabilityDisplay.enable);
     end
 end)
 

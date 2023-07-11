@@ -36,10 +36,14 @@ core.frames = {
     bagsBar = _G["BagsBar"],
     microMenuContainer = _G["MicroMenuContainer"],
     lootFrame = _G["LootFrame"],
-    focusFrame = _G["FocusFrame"]
+    focusFrame = _G["FocusFrame"],
+    mirrorTimerContainer = _G["MirrorTimerContainer"],
+    archeologyDigsiteProgressBar = _G["ArcheologyDigsiteProgressBar"],
+    vehicleSeatIndicator = _G["VehicleSeatIndicator"],
 }
 
 
+local updateEventFrame = CreateFrame("Frame");
 local settingDialog = _G["EditModeSystemSettingsDialog"];
 local coordText = settingDialog:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 coordText:SetPoint("BOTTOM", settingDialog, "BOTTOM", 0, 125);
@@ -66,7 +70,7 @@ downArrowButton:SetSize(30, 30)
 downArrowButton:GetNormalTexture():SetRotation(math.rad(-90))
 
 
-settingDialog:HookScript("OnUpdate", function()
+updateEventFrame:HookScript("OnUpdate", function()
     for name, frame in pairs(core.frames) do
         local movable = frame:IsMovable();
         if movable then

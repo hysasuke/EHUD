@@ -80,22 +80,49 @@ function EC:CreateCopyButtons()
     end
 end
 
+-- Copied from ElvUI /ElvUI/Core/Modules/Chat/Chat.lua
+local function removeExtraCharacters(text)
+    local raidIconFunc = function(x)
+        x = x ~= '' and _G['RAID_TARGET_' .. x]; return x and ('{' .. strlower(x) .. '}') or ''
+    end
+    local stripTextureFunc = function(w, x, y) if x == '' then return (w ~= '' and w) or (y ~= '' and y) or '' end end
+    local hyperLinkFunc = function(w, x, y)
+        if w ~= '' then return end
+        local emoji = (x ~= '' and x) and strmatch(x, 'elvmoji:%%(.+)')
+        return (emoji and E.Libs.Deflate:DecodeForPrint(emoji)) or y
+    end
+    local fourString = function(v, w, x, y)
+        return format('%s%s%s', v, w, (v and v == '1' and x) or y)
+    end
+    text = gsub(text, [[|TInterface\TargetingFrame\UI%-RaidTargetingIcon_(%d+):0|t]], raidIconFunc) --converts raid icons into {star} etc, if possible.
+    text = gsub(text, '(%s?)(|?)|[TA].-|[ta](%s?)', stripTextureFunc)                               --strip any other texture out but keep a single space from the side(s).
+    text = gsub(text, '(|?)|H(.-)|h(.-)|h', hyperLinkFunc)                                          --strip hyperlink data only keeping the actual text.
+    text = gsub(text, '(%d+)(.-)|4(.-):(.-);', fourString)                                          --stuff where it goes 'day' or 'days' like played; tech this is wrong but okayish
+    return text
+end
+
 function EC:OpenCopyChatFrame(chatFrame)
     chatCopyFrame:SetSize(500, 300)
     chatCopyFrame.EditBox:SetText("");
     local numOfLines = chatFrame:GetNumMessages() or 0;
     for i = 1, numOfLines do
         local message, r, g, b = chatFrame:GetMessageInfo(i);
-        local colorCode = "";
+        local colorCode = RGBToColorCode(1, 1, 1);
+        message = removeExtraCharacters(message);
         if (r and g and b) then
             colorCode = RGBToColorCode(r, g, b);
-            message = string.gsub(message, "|r", "|r" .. colorCode);
+            message = format('%s%s|r', colorCode, message);
             message = colorCode .. message;
         end
+
         if (message) then
             chatCopyFrame.EditBox:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE");
             chatCopyFrame.EditBox:SetWidth(chatCopyFrame:GetWidth() - 30);
-            chatCopyFrame.EditBox:Insert(message .. "\n");
+            chatCopyFrame.EditBox:Insert(message);
+
+            if (i < numOfLines) then
+                chatCopyFrame.EditBox:Insert("\n");
+            end
         end
     end
 

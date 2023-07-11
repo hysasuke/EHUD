@@ -1,8 +1,8 @@
-## Interface: 100105
+## Interface: 100100
 ## Title: |cff00a0e9EHUD|r
 ## Notes: 
 ## Author: Snowpanther
-## Version: v0.0.7
+## Version: v0.0.8
 ## SavedVariables: EHUDDB 
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDDI-1.0, LibSink-2.0, LibDualSpec-1.0
 ## IconTexture: Interface\AddOns\EHUD\assets\EHUD

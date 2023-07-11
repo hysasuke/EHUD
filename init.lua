@@ -5,6 +5,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 core.UF = {}
 core.BT = {}
 core.IDD = {}
+core.PF = {}
 core.config = {};
 core.config.dimensions = {
     playerFrame = {
@@ -74,7 +75,7 @@ EHUD.options = {
         },
         playerFrameSettings = {
             type = "group",
-            name = L["playerFrameHitIndicator"],
+            name = L["playerFrame"],
             args = {
                 playerFrameHitIndicator = {
                     type = "range",
@@ -89,6 +90,60 @@ EHUD.options = {
                         EHUD.db.profile.playerFrame.hitIndicatorFontSize = value
                         _G["PlayerFrame"].feedbackFontHeight = value
                     end,
+                    width = "full",
+                },
+                healthBarColorOptions = {
+                    type = "group",
+                    name = L["healthBarColor"],
+                    inline = true,
+                    args = {
+                        enable = {
+                            order = 0,
+                            type = "toggle",
+                            name = L["enable"],
+                            get = function()
+                                return EHUD.db.profile.playerFrame.healthBarColor.enabled
+                            end,
+                            set = function(info, value)
+                                EHUD.db.profile.playerFrame.healthBarColor.enabled = value
+                                core.PF:ToggleHealthBarColor(value);
+                            end,
+                        },
+                        useClassColor = {
+                            type = "toggle",
+                            name = L["useClassColor"],
+                            hidden = function()
+                                return not EHUD.db.profile.playerFrame.healthBarColor.enabled
+                            end,
+                            get = function()
+                                return EHUD.db.profile.playerFrame.healthBarColor.useClassColor
+                            end,
+                            set = function(info, value)
+                                EHUD.db.profile.playerFrame.healthBarColor.useClassColor = value
+                                if value then
+                                    core.PF:SetHealthBarColor(core.PF:GetPlayerClassColor())
+                                else
+                                    core.PF:SetHealthBarColor(
+                                        EHUD.db.profile.playerFrame.healthBarColor)
+                                end
+                            end,
+
+                        },
+                        healthBarColorPicker = {
+                            type = "color",
+                            name = L["healthBarColor"],
+                            hidden = function()
+                                return not EHUD.db.profile.playerFrame.healthBarColor.enabled or
+                                    EHUD.db.profile.playerFrame.healthBarColor.useClassColor
+                            end,
+                            hasAlpha = true,
+                            get = function()
+                                local color = EHUD.db.profile.playerFrame.healthBarColor.color
+                                return color.r, color.g, color.b, color.a
+                            end,
+                            set = "setHealthBarColor",
+                        }
+                    }
                 }
 
             }
@@ -142,6 +197,16 @@ local defaultConfigs = {
             yOfs = 0,
             containerWidth = core.config.dimensions.playerFrame.width,
             containerHeight = core.config.dimensions.playerFrame.height,
+            healthBarColor = {
+                enabled = true,
+                useClassColor = true,
+                color = {
+                    r = 1,
+                    g = 1,
+                    b = 1,
+                    a = 1
+                }
+            }
         },
         targetFrame = {
             point = "CENTER",
@@ -154,9 +219,9 @@ local defaultConfigs = {
         buffTracker = {
             trackers = {}
         },
-        -- durabilityDisplay = {
-        --     enable = true
-        -- },
+        durabilityDisplay = {
+            enable = true
+        },
         enhancedMythicPlusDisplay = {
             enable = true
         },
@@ -221,6 +286,7 @@ function EHUD:OnInitialize()
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
     MoveBuiltInFramesMovable();
     core.FineTune:Initialize();
+    core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
     -- -- Copy buffTracker Data from profile to class
     -- if self.db.profile.buffTracker then
     --     self.db.class.buffTracker = self.db.profile.buffTracker
@@ -272,4 +338,9 @@ end
 function EHUD:setFineTuneHUDEnabled(info, value)
     EHUD.db.profile.fineTuneHUD.enable = value
     core.FineTune:Toggle(value)
+end
+
+function EHUD:setHealthBarColor(info, r, g, b, a)
+    EHUD.db.profile.playerFrame.healthBarColor.color = { r = r, g = g, b = b, a = a }
+    core.PF:SetHealthBarColor({ r = r, g = g, b = b, a = a })
 end

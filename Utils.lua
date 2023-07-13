@@ -160,3 +160,36 @@ function SetFrameMovable(frame)
     frame:SetScript("OnDragStart", frame.StartMoving);
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing);
 end
+
+function GetPlayerSpecs()
+    local output = {};
+    local spec = GetSpecialization();
+    local currentSpec = {};
+    for i = 1, GetNumSpecializations() do
+        local id, name, description, icon, background, role, class = GetSpecializationInfo(i);
+        table.insert(output, {
+            id = id,
+            name = name,
+            description = description,
+            icon = icon,
+            background = background,
+            role = role,
+            class = class,
+            selected = spec == i
+        });
+
+        if spec == i then
+            currentSpec = {
+                id = id,
+                name = name,
+                description = description,
+                icon = icon,
+                background = background,
+                role = role,
+                class = class,
+                selected = spec == i
+            }
+        end
+    end
+    return output, currentSpec;
+end

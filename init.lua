@@ -2,6 +2,9 @@ local _, core = ...; -- Namespace
 local AceGUI = LibStub("AceGUI-3.0")
 EHUD = LibStub("AceAddon-3.0"):NewAddon("EHUD", "AceConsole-3.0", "AceEvent-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
+
+
+
 core.UF = {}
 core.BT = {}
 core.IDD = {}
@@ -282,15 +285,27 @@ function EHUD:OnInitialize()
     LibStub("AceConfig-3.0"):RegisterOptionsTable("EHUD", EHUD.options)
     self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("EHUD", "EHUD")
     handleFramePoints();
-    core.BT:Initialize()
+
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
     MoveBuiltInFramesMovable();
     core.FineTune:Initialize();
-    core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
     -- -- Copy buffTracker Data from profile to class
     -- if self.db.profile.buffTracker then
     --     self.db.class.buffTracker = self.db.profile.buffTracker
     -- end
+end
+
+function EHUD:PLAYER_ENTERING_WORLD()
+    core.BT:Initialize()
+    core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
+end
+
+function EHUD:PLAYER_SPECIALIZATION_CHANGED()
+    local buffTrackers = EHUD.db.class.buffTracker.trackers;
+    local specs, currentSpec = GetPlayerSpecs();
+    for i = 1, #buffTrackers do
+        core.BT:HandleBuffTrackerVisible(i, currentSpec);
+    end
 end
 
 SLASH_EHUDOPTIONS1 = '/ehud';
@@ -344,3 +359,7 @@ function EHUD:setHealthBarColor(info, r, g, b, a)
     EHUD.db.profile.playerFrame.healthBarColor.color = { r = r, g = g, b = b, a = a }
     core.PF:SetHealthBarColor({ r = r, g = g, b = b, a = a })
 end
+
+-- Events
+EHUD:RegisterEvent("PLAYER_ENTERING_WORLD");
+EHUD:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED");

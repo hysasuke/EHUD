@@ -3,22 +3,17 @@ local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 
 local pveFrame = _G["PVEFrame"];
 
-local function generateRewardDetails(frame)
+local function generateRewardDetails()
     local rewardDetails = GetCurrentWeekRewardDetails();
-    local container = frame.rewardsDetailFrame or CreateFrame("Frame", nil, frame);
-    container:SetSize(100, 100)
-    container:Hide();
+    local output = {};
     for key, value in pairs(rewardDetails) do
-        container["fontString" .. key] = container["fontString" .. key] or
-            container:CreateFontString(nil, "OVERLAY", "GameFontNormal");
         local rewardILvlText = value.rewardILvl > 0 and L["ilvl"] .. " " .. tostring(value.rewardILvl) or
             L["incompleted"];
         local displayText = string.format("%d/%d: %s (%s)", value.progress, value.threshold, rewardILvlText,
             value.currentRewardKeystoneLevel);
-        container["fontString" .. key]:SetText(displayText);
-        container["fontString" .. key]:SetPoint("TOPLEFT", container, "TOPLEFT", 0, -key * 20);
+        table.insert(output, displayText);
     end
-    return container;
+    return output;
 end
 
 local function generateTeleportButton(frame, challengeModeID)
@@ -135,8 +130,18 @@ pveFrame:HookScript("OnUpdate", function(self)
             challengesFrame:HookScript("OnUpdate", mythicPlusFrameOnShow)
             challengesFrame.scriptSetUp = true;
         end
-        challengesFrame.rewardsDetailFrame = generateRewardDetails(challengesFrame);
-        challengesFrame.rewardsDetailFrame:SetPoint("TOPLEFT", challengesFrame, "TOPLEFT", 20, -30);
-        challengesFrame.rewardsDetailFrame:Show();
+        -- challengesFrame.rewardsDetailFrame = generateRewardDetails(challengesFrame);
+        -- challengesFrame.rewardsDetailFrame:SetPoint("TOPLEFT", challengesFrame, "TOPLEFT", 20, -30);
+        -- challengesFrame.rewardsDetailFrame:Show();
+
+        local weeklyChestFrame = challengesFrame.WeeklyInfo.Child.WeeklyChest;
+        if not weeklyChestFrame.scriptSetUp then
+            weeklyChestFrame:HookScript("OnEnter", function()
+                local rewardDetails = generateRewardDetails();
+                GameTooltip:AddLine(table.concat(rewardDetails, "\n"));
+                GameTooltip:Show();
+            end)
+            weeklyChestFrame.scriptSetUp = true;
+        end
     end
 end)

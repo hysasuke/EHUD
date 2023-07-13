@@ -13,6 +13,7 @@ local totalNumberOfTrackers = math.floor(dimensions.width / iconDimensions.width
 local function HandleOptions(index)
     local args = {};
     local tracker = buffTrackers[index];
+
     for i = 1, totalNumberOfTrackers do
         if not tracker["trackingBuffs"] then
             tracker["trackingBuffs"] = {}
@@ -23,6 +24,7 @@ local function HandleOptions(index)
             inline = true,
             order = i,
             args = {
+
                 buffID = {
                     type = "input",
                     name = L["buffDebuffID"],
@@ -83,6 +85,39 @@ local function HandleOptions(index)
             }
         }
     end
+    args["specSelection"] = {
+        type = "multiselect",
+        name = L["specSelection"],
+        width = 1,
+        order = 0,
+        values = function()
+            local output = {}
+            local specs = GetPlayerSpecs()
+            for i = 1, #specs do
+                output[specs[i].id] = specs[i].name
+            end
+            return output
+        end,
+        get = function(_, value)
+            return tracker["enabledSpecs"] and tContains(tracker["enabledSpecs"], value)
+        end,
+        set = function(_, value, state)
+            if state then
+                if not tracker["enabledSpecs"] then
+                    tracker["enabledSpecs"] = {}
+                end
+                table.insert(tracker["enabledSpecs"], value)
+            else
+                for i = 1, #tracker["enabledSpecs"] do
+                    if tracker["enabledSpecs"][i] == value then
+                        table.remove(tracker["enabledSpecs"], i)
+                    end
+                end
+            end
+            local _, currentSpec = GetPlayerSpecs()
+            BT:HandleBuffTrackerVisible(index, currentSpec)
+        end
+    }
     EHUD.options.args.buffTrackerSettings.args["buffTracker" .. index] = {
         type = "group",
         name = L["buffTracker"] .. index,
@@ -99,8 +134,23 @@ local function HandleOptions(index)
     }
 end
 
+function BT:HandleBuffTrackerVisible(trackerIndex, currentSpec)
+    local enabledSpecs = EHUD.db.class["buffTracker"]["trackers"][trackerIndex].enabledSpecs or {};
+    local enabled = false;
+    for k, v in pairs(enabledSpecs) do
+        if v == currentSpec.id then
+            enabled = true;
+        end
+    end
+    if enabled then
+        buffTrackers[trackerIndex].frame:Show();
+    else
+        buffTrackers[trackerIndex].frame:Hide();
+    end
+end
+
 function BT:CreateTrackerFrame(trackerIndex, savingTable)
-    local points = EHUD.db.class["buffTracker"]["trackers"]["tracker" .. trackerIndex] or nil
+    local points = EHUD.db.class["buffTracker"]["trackers"][trackerIndex] or nil;
     local containerFrame = CreateFrame("Frame", "buffTrackerFrame" .. trackerIndex, UIParent);
     containerFrame.iconFrames = {};
     containerFrame:SetSize(dimensions.width, dimensions.height);
@@ -114,9 +164,11 @@ function BT:CreateTrackerFrame(trackerIndex, savingTable)
         self:StopMovingOrSizing();
         SaveFramePoints(self,
             "buffTracker",
-            "tracker" .. trackerIndex
+            trackerIndex
         );
     end)
+
+
     if savingTable then
         table.insert(buffTrackers, {
             frame = containerFrame,
@@ -144,7 +196,7 @@ function BT:CreateTrackerFrame(trackerIndex, savingTable)
     editModeFrameMaskText:SetText(L["trackerFrame"] .. trackerIndex)
     editModeFrameMask:Hide()
 
-    HandleOptions(#buffTrackers);
+    HandleOptions(trackerIndex);
     -- Create icon frame
     local totalNumberOfIcons = math.floor(dimensions.width / iconDimensions.width);
     for i = 1, totalNumberOfIcons do
@@ -265,8 +317,10 @@ end
 
 function BT:Initialize()
     buffTrackers = EHUD.db.class.buffTracker.trackers;
+    local specs, currentSpec = GetPlayerSpecs();
     for i = 1, #buffTrackers do
         BT:CreateTrackerFrame(i, false);
+        BT:HandleBuffTrackerVisible(i, currentSpec);
     end
 end
 

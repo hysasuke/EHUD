@@ -27,7 +27,7 @@ function PF:SetHealthBarColor(color)
 end
 
 function PF:GetPlayerClassColor()
-    local _, englishClass = GetPlayerInfoByGUID(UnitGUID("player"))
+    local _, englishClass = UnitClass("player")
     local r, g, b, hex = GetClassColor(englishClass)
     return { r = r, g = g, b = b, a = 1 }
 end
@@ -35,7 +35,8 @@ end
 function PF:ToggleHealthBarColor(value)
     if value then
         if EHUD.db.profile.playerFrame.healthBarColor.useClassColor then
-            PF:SetHealthBarColor(PF:GetPlayerClassColor())
+            local classColor = PF:GetPlayerClassColor();
+            PF:SetHealthBarColor(classColor)
         else
             PF:SetHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.color)
         end

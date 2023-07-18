@@ -299,7 +299,6 @@ end
 function EHUD:PLAYER_ENTERING_WORLD()
     core.BT:Initialize()
     core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
-    core.EB:Initialize()
 end
 
 function EHUD:PLAYER_SPECIALIZATION_CHANGED()

@@ -4,6 +4,7 @@ local _, core = ...; -- Namespace
 local EB = {};
 core.EB = EB;
 
+
 local function GetItemContainerLocation(bagID, itemIndex)
     local numerOfSlots = C_Container.GetContainerNumSlots(bagID);
     return {
@@ -39,11 +40,12 @@ local function HandleBagItems(bagID)
                 local containerItemInfo =
                     C_Container.GetContainerItemInfo(i, slotIndex);
                 local containerPos = GetItemContainerLocation(i, slotIndex)
+                local currentFrame = _G
+                    ["ContainerFrame" .. containerPos.bagIndex .. "Item" .. containerPos.itemIndex];
                 if containerItemInfo then
                     local itemLink = containerItemInfo.hyperlink;
                     local itemInfo = HandleItemLink(itemLink);
-                    local currentFrame = _G
-                        ["ContainerFrame" .. containerPos.bagIndex .. "Item" .. containerPos.itemIndex];
+
 
                     -- Item level font string
                     currentFrame.itemLevelText = currentFrame.itemLevelText or
@@ -74,30 +76,27 @@ local function HandleBagItems(bagID)
                     else
                         currentFrame.itemLevelText:SetText("")
                     end
+                else
+                    if currentFrame.itemLevelText then
+                        currentFrame.itemLevelText:SetText("")
+                    end
+                    if currentFrame.BOEIndicator then
+                        currentFrame.BOEIndicator:SetText("")
+                    end
                 end
             end
         end
     end
 end
 
-local function HookScripts()
-    for i = 1, 13 do
-        local currentFrame = _G["ContainerFrame" .. i];
-        if currentFrame then
-            currentFrame:HookScript("OnShow", function()
-                HandleBagItems(i - 1);
-            end);
-        end
+EHUD:RegisterEvent("BAG_UPDATE", function(event, bag)
+    local currentFrame = _G["ContainerFrame" .. bag];
+    if currentFrame then
+        HandleBagItems(bag);
     end
 
     local combinedBagFrame = _G["ContainerFrameCombinedBags"];
     if combinedBagFrame then
-        combinedBagFrame:HookScript("OnShow", function()
-            HandleBagItems();
-        end);
+        HandleBagItems();
     end
-end
-
-function EB:Initialize()
-    HookScripts();
-end
+end);

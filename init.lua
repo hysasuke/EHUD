@@ -7,8 +7,9 @@ local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 
 core.UF = {}
 core.BT = {}
-core.IDD = {}
+core.ECF = {}
 core.PF = {}
+core.EB = {}
 core.config = {};
 core.config.dimensions = {
     playerFrame = {
@@ -298,6 +299,7 @@ end
 function EHUD:PLAYER_ENTERING_WORLD()
     core.BT:Initialize()
     core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
+    core.EB:Initialize()
 end
 
 function EHUD:PLAYER_SPECIALIZATION_CHANGED()
@@ -335,7 +337,7 @@ end
 
 function EHUD:setDurabilityDisplayEnabled(info, value)
     EHUD.db.profile.durabilityDisplay.enable = value
-    core.IDD:ToggleDurabilityFrame(value)
+    core.ECF:ToggleDurabilityFrame(value)
 end
 
 function EHUD:isEMPEnabled()

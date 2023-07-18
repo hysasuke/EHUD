@@ -1,3 +1,4 @@
+local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 -- Get the player's equipment durability
 function GetEquipmentDurability(unit)
     local durability = 0
@@ -192,4 +193,78 @@ function GetPlayerSpecs()
         end
     end
     return output, currentSpec;
+end
+
+function HandleItemLink(itemLink)
+    if not itemLink then return {} end
+    local itemString = string.match(itemLink, "item[%-?%d:]+");
+    if not itemString then return {} end
+    local itemSplit = string:split(itemString, ":");
+
+    -- dump itemSplit
+
+    local itemID = itemSplit[2];
+    local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(itemLink);
+
+    local itemEnchant = (enchantItemID or enchantID) and {
+        id = enchantItemID,
+        enchantID = enchantID,
+        name = enchantItemID and select(1, GetItemInfo(enchantItemID)),
+        icon = enchantItemID and select(10, GetItemInfo(enchantItemID)),
+    } or nil;
+
+    local itemGem1 = itemSplit[4] ~= "nil" and {
+        id = itemSplit[4],
+        name = select(1, GetItemInfo(itemSplit[4])),
+        icon = select(10, GetItemInfo(itemSplit[4])),
+    } or nil
+
+    local itemGem2 = itemSplit[5] ~= "nil" and {
+        id = itemSplit[5],
+        name = select(1, GetItemInfo(itemSplit[5])),
+        icon = select(10, GetItemInfo(itemSplit[5])),
+    } or nil;
+    local itemGem3 = itemSplit[6] ~= "nil" and {
+        id = itemSplit[6],
+        name = select(1, GetItemInfo(itemSplit[6])),
+        icon = select(10, GetItemInfo(itemSplit[6])),
+    } or nil;
+    local itemGem4 = itemSplit[7] ~= "nil" and {
+        id = itemSplit[7],
+        name = select(1, GetItemInfo(itemSplit[7])),
+        icon = select(10, GetItemInfo(itemSplit[7])),
+    } or nil;
+
+    local itemName = GetItemInfo(itemID);
+    local itemIcon = select(10, GetItemInfo(itemID));
+    local isBOE = select(14, GetItemInfo(itemID)) == 2;
+    local itemType = select(12, GetItemInfo(itemID));
+    local itemQuality = select(3, GetItemInfo(itemID));
+    return {
+        itemID = itemID,
+        itemName = itemName,
+        itemIcon = itemIcon,
+        itemEnchant = itemEnchant,
+        itemGem1 = itemGem1,
+        itemGem2 = itemGem2,
+        itemGem3 = itemGem3,
+        itemGem4 = itemGem4,
+        isBOE = isBOE,
+        itemType = itemType,
+        itemQuality = itemQuality
+    }
+end
+
+function string:split(inputstr, sep)
+    sep = sep or '%s'
+    local t = {}
+    for field, s in string.gmatch(inputstr, "([^" .. sep .. "]*)(" .. sep .. "?)") do
+        if field ~= "" then
+            table.insert(t, field)
+        else
+            table.insert(t, "nil")
+        end
+
+        if s == "" then return t end
+    end
 end

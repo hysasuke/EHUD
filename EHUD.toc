@@ -34,3 +34,4 @@ EnhancedMythicPlus.lua
 FineTuneHUD.lua
 EnhancedChat.lua
 EnhancedBag.lua
+EnhancedDragonRiding.lua

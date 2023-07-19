@@ -268,3 +268,34 @@ function string:split(inputstr, sep)
         if s == "" then return t end
     end
 end
+
+-- local gradientColor = {
+--  [0] = CreateColor(0, 1, 0, 1),
+--  [1] = CreateColor(1, 1, 0, 1),
+--  [2] = CreateColor(1, 0, 0, 1)
+-- }
+function ColorGradient(perc, colors)
+    local num = #colors
+
+    if (perc >= 1) then
+        return colors[num]
+    elseif (perc <= 0) then
+        return colors[0]
+    end
+
+    local segment, relperc = math.modf(perc * num)
+
+    local r1, g1, b1, r2, g2, b2
+    r1, g1, b1 = colors[segment]:GetRGB()
+    r2, g2, b2 = colors[segment + 1]:GetRGB()
+
+    if (not r2 or not g2 or not b2) then
+        return colors[0]
+    else
+        local r = r1 + (r2 - r1) * relperc
+        local g = g1 + (g2 - g1) * relperc
+        local b = b1 + (b2 - b1) * relperc
+
+        return CreateColor(r, g, b, 1)
+    end
+end

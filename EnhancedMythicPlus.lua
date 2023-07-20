@@ -18,10 +18,12 @@ end
 
 local function generateTeleportButton(frame, challengeModeID)
     -- print("generateTeleportButton")
-    local button = frame.teleportButton or CreateFrame("Button", nil, frame, "SecureActionButtonTemplate");
-
+    local button = frame.teleportButton or CreateFrame("Button", nil, frame, "InsecureActionButtonTemplate");
+    button:SetScript("OnEnter", function()
+        frame:OnEnter()
+    end)
     if (not button.SetBackdrop) then Mixin(button, BackdropTemplateMixin) end
-    button:HookScript("OnUpdate", function()
+    button:SetScript("OnUpdate", function()
         local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
         local spellName = GetSpellInfo(spellID);
         local spellKnown = IsSpellKnown(spellID);
@@ -68,12 +70,8 @@ local function mythicPlusFrameOnShow(frame, event)
         if mapID then
             local highestLevelFrame = value.HighestLevel;
             local fontObj = highestLevelFrame:GetFontObject();
-            if not value.teleportButton then
-                value.teleportButton = generateTeleportButton(value, mapID);
-                value.teleportButton:HookScript("OnEnter", function()
-                    value:OnEnter()
-                end)
-            end
+            value.teleportButton = generateTeleportButton(value, mapID);
+
             if not value.fortifiedScoreText then
                 value.fortifiedScoreText = value:CreateFontString(nil, "OVERLAY",
                     "GameFontNormal");
@@ -128,6 +126,7 @@ pveFrame:HookScript("OnUpdate", function(self)
         challengesFrame = _G["ChallengesFrame"];
         if not challengesFrame.scriptSetUp then
             challengesFrame:HookScript("OnUpdate", mythicPlusFrameOnShow)
+            -- mythicPlusFrameOnShow(challengesFrame);
             challengesFrame.scriptSetUp = true;
         end
         -- challengesFrame.rewardsDetailFrame = generateRewardDetails(challengesFrame);

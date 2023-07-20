@@ -1,3 +1,4 @@
+local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
 -- Get the player's equipment durability
 function GetEquipmentDurability(unit)
     local durability = 0
@@ -192,4 +193,109 @@ function GetPlayerSpecs()
         end
     end
     return output, currentSpec;
+end
+
+function HandleItemLink(itemLink)
+    if not itemLink then return {} end
+    local itemString = string.match(itemLink, "item[%-?%d:]+");
+    if not itemString then return {} end
+    local itemSplit = string:split(itemString, ":");
+
+    -- dump itemSplit
+
+    local itemID = itemSplit[2];
+    local enchantItemID, enchantID = LibItemEnchant:GetEnchantItemID(itemLink);
+
+    local itemEnchant = (enchantItemID or enchantID) and {
+        id = enchantItemID,
+        enchantID = enchantID,
+        name = enchantItemID and select(1, GetItemInfo(enchantItemID)),
+        icon = enchantItemID and select(10, GetItemInfo(enchantItemID)),
+    } or nil;
+
+    local itemGem1 = itemSplit[4] ~= "nil" and {
+        id = itemSplit[4],
+        name = select(1, GetItemInfo(itemSplit[4])),
+        icon = select(10, GetItemInfo(itemSplit[4])),
+    } or nil
+
+    local itemGem2 = itemSplit[5] ~= "nil" and {
+        id = itemSplit[5],
+        name = select(1, GetItemInfo(itemSplit[5])),
+        icon = select(10, GetItemInfo(itemSplit[5])),
+    } or nil;
+    local itemGem3 = itemSplit[6] ~= "nil" and {
+        id = itemSplit[6],
+        name = select(1, GetItemInfo(itemSplit[6])),
+        icon = select(10, GetItemInfo(itemSplit[6])),
+    } or nil;
+    local itemGem4 = itemSplit[7] ~= "nil" and {
+        id = itemSplit[7],
+        name = select(1, GetItemInfo(itemSplit[7])),
+        icon = select(10, GetItemInfo(itemSplit[7])),
+    } or nil;
+
+    local itemName = GetItemInfo(itemID);
+    local itemIcon = select(10, GetItemInfo(itemID));
+    local isBOE = select(14, GetItemInfo(itemID)) == 2;
+    local itemType = select(12, GetItemInfo(itemID));
+    local itemQuality = select(3, GetItemInfo(itemID));
+    return {
+        itemID = itemID,
+        itemName = itemName,
+        itemIcon = itemIcon,
+        itemEnchant = itemEnchant,
+        itemGem1 = itemGem1,
+        itemGem2 = itemGem2,
+        itemGem3 = itemGem3,
+        itemGem4 = itemGem4,
+        isBOE = isBOE,
+        itemType = itemType,
+        itemQuality = itemQuality
+    }
+end
+
+function string:split(inputstr, sep)
+    sep = sep or '%s'
+    local t = {}
+    for field, s in string.gmatch(inputstr, "([^" .. sep .. "]*)(" .. sep .. "?)") do
+        if field ~= "" then
+            table.insert(t, field)
+        else
+            table.insert(t, "nil")
+        end
+
+        if s == "" then return t end
+    end
+end
+
+-- local gradientColor = {
+--  [0] = CreateColor(0, 1, 0, 1),
+--  [1] = CreateColor(1, 1, 0, 1),
+--  [2] = CreateColor(1, 0, 0, 1)
+-- }
+function ColorGradient(perc, colors)
+    local num = #colors
+
+    if (perc >= 1) then
+        return colors[num]
+    elseif (perc <= 0) then
+        return colors[0]
+    end
+
+    local segment, relperc = math.modf(perc * num)
+
+    local r1, g1, b1, r2, g2, b2
+    r1, g1, b1 = colors[segment]:GetRGB()
+    r2, g2, b2 = colors[segment + 1]:GetRGB()
+
+    if (not r2 or not g2 or not b2) then
+        return colors[0]
+    else
+        local r = r1 + (r2 - r1) * relperc
+        local g = g1 + (g2 - g1) * relperc
+        local b = b1 + (b2 - b1) * relperc
+
+        return CreateColor(r, g, b, 1)
+    end
 end

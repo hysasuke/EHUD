@@ -19,13 +19,13 @@ Libs\Ace3\AceGUI-3.0\AceGUI-3.0.xml
 Libs\Ace3\AceConfig-3.0\AceConfig-3.0.xml
 Libs\Ace3\AceLocale-3.0\AceLocale-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
-
+Libs\LibItemEnchant.lua
 locale\Locales.xml
 
 Utils.lua
 
 init.lua
-ItemDurabilityDisplay.lua
+EnhancedCharacterFrame.lua
 BuffTracker.lua
 UnitFrame.lua
 PlayerFrame.lua
@@ -33,3 +33,5 @@ TargetFrame.lua
 EnhancedMythicPlus.lua
 FineTuneHUD.lua
 EnhancedChat.lua
+EnhancedBag.lua
+EnhancedDragonRiding.lua

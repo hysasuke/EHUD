@@ -7,8 +7,10 @@ local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 
 core.UF = {}
 core.BT = {}
-core.IDD = {}
+core.ECF = {}
 core.PF = {}
+core.EB = {}
+core.EDR = {}
 core.config = {};
 core.config.dimensions = {
     playerFrame = {
@@ -186,7 +188,26 @@ EHUD.options = {
                     set = "setFineTuneHUDEnabled",
                 },
             }
-        }
+        },
+        enhancedDragonRiding = {
+            type = "group",
+            name = L["enhancedDragonRiding"],
+            args = {
+                dragonRidingSpeedometer = {
+                    type = "group",
+                    name = L["dragonRidingSpeedometer"],
+                    args = {
+                        toggle = {
+                            type = "toggle",
+                            name = L["enable"],
+                            get = "isDragonRidingSpeedometerEnabled",
+                            set = "setDragonRidingSpeedometerEnabled",
+                        },
+
+                    }
+                }
+            }
+        },
     }
 }
 
@@ -229,6 +250,9 @@ local defaultConfigs = {
             enable = true
         },
         fineTuneHUD = {
+            enable = true
+        },
+        enhancedDragonRiding = {
             enable = true
         }
     },
@@ -296,8 +320,9 @@ function EHUD:OnInitialize()
 end
 
 function EHUD:PLAYER_ENTERING_WORLD()
-    core.BT:Initialize()
+    core.BT:Initialize();
     core.PF:ToggleHealthBarColor(EHUD.db.profile.playerFrame.healthBarColor.enabled)
+    core.EDR:Initialize();
 end
 
 function EHUD:PLAYER_SPECIALIZATION_CHANGED()
@@ -314,6 +339,7 @@ function SlashCmdList.EHUDOPTIONS(msg, editBox)
     InterfaceOptionsFrame_OpenToCategory("EHUD");
 end
 
+-- Setting Functions
 function EHUD:isEditMode()
     return core.isEditMode
 end
@@ -335,7 +361,7 @@ end
 
 function EHUD:setDurabilityDisplayEnabled(info, value)
     EHUD.db.profile.durabilityDisplay.enable = value
-    core.IDD:ToggleDurabilityFrame(value)
+    core.ECF:ToggleDurabilityFrame(value)
 end
 
 function EHUD:isEMPEnabled()
@@ -358,6 +384,14 @@ end
 function EHUD:setHealthBarColor(info, r, g, b, a)
     EHUD.db.profile.playerFrame.healthBarColor.color = { r = r, g = g, b = b, a = a }
     core.PF:SetHealthBarColor({ r = r, g = g, b = b, a = a })
+end
+
+function EHUD:isDragonRidingSpeedometerEnabled()
+    return EHUD.db.profile.enhancedDragonRiding.enable
+end
+
+function EHUD:setDragonRidingSpeedometerEnabled(info, value)
+    EHUD.db.profile.enhancedDragonRiding.enable = value
 end
 
 -- Events

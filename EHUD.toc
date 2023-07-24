@@ -35,3 +35,4 @@ FineTuneHUD.lua
 EnhancedChat.lua
 EnhancedBag.lua
 EnhancedDragonRiding.lua
+CombatText.lua

@@ -1,4 +1,34 @@
 local LibItemEnchant = LibStub:GetLibrary("LibItemEnchant.7000")
+
+function Debug(...)
+    local debugChatFrame = nil;
+    for i = 1, 10 do
+        local chatName = GetChatWindowInfo(i);
+        if chatName == "Debug" then
+            debugChatFrame = Chat_GetChatFrame(i);
+            break;
+        end
+    end
+    if debugChatFrame then
+        local args = { ... };
+        local output = "";
+        for _, value in pairs(args) do
+            if type(value) == "table" then
+                output = output .. "table: ";
+                for k, v in pairs(value) do
+                    output = output .. tostring(k) .. " = " .. tostring(v) .. " ";
+                end
+            else
+                if not value then
+                    value = "nil";
+                end
+                output = output .. tostring(value) .. " ";
+            end
+        end
+        debugChatFrame:AddMessage(output);
+    end
+end
+
 -- Get the player's equipment durability
 function GetEquipmentDurability(unit)
     local durability = 0
@@ -269,6 +299,8 @@ function string:split(inputstr, sep)
     end
 end
 
+-- Color related
+
 -- local gradientColor = {
 --  [0] = CreateColor(0, 1, 0, 1),
 --  [1] = CreateColor(1, 1, 0, 1),
@@ -297,5 +329,83 @@ function ColorGradient(perc, colors)
         local b = b1 + (b2 - b1) * relperc
 
         return CreateColor(r, g, b, 1)
+    end
+end
+
+function GetSpellSchoolColor(spellSchool)
+    local color = {
+        [1] = CreateColorFromBytes(255, 255, 0, 1),
+        [2] = CreateColorFromBytes(255, 230, 128, 1),
+        [4] = CreateColorFromBytes(255, 128, 0, 1),
+        [8] = CreateColorFromBytes(77, 255, 77, 1),
+        [16] = CreateColorFromBytes(128, 255, 255, 1),
+        [32] = CreateColorFromBytes(128, 128, 255, 1),
+        [64] = CreateColorFromBytes(255, 128, 255, 1),
+    }
+    color[3] = color[1];
+    color[5] = color[1];
+    color[6] = color[2];
+    color[9] = color[1];
+    color[10] = color[2];
+    color[12] = color[4];
+    color[17] = color[1];
+    color[18] = color[2];
+    color[20] = color[4];
+    color[24] = color[8];
+    color[33] = color[1];
+    color[34] = color[2];
+    color[36] = color[4];
+    color[40] = color[8];
+    color[48] = color[16];
+    color[65] = color[1];
+    color[66] = color[2];
+    color[68] = color[4];
+    color[72] = color[8];
+    color[80] = color[16];
+    color[96] = color[32];
+    color[28] = color[4];
+    color[62] = color[2];
+    color[106] = color[2];
+    color[124] = color[4];
+    color[126] = color[2];
+    color[127] = color[1];
+
+
+
+    return color[spellSchool];
+end
+
+-- Animation
+function SetAnimation(frame)
+    frame.StartAnimation = function(self, value, toValue, duration, onProgress, onComplete)
+        local onUpdateCopy = self:GetScript("OnUpdate");
+        frame.targetValue = value;
+        frame.startTime = GetTime();
+        frame.onUpdateCopy = onUpdateCopy;
+        local difference = toValue - value;
+        frame:HookScript("OnUpdate", function(self, elapsed)
+            local progress = duration > 0 and (GetTime() - self.startTime) / duration or 1;
+            local currentValue = value + (difference * progress);
+            if progress > 1 then
+                progress = 1;
+                onProgress(toValue);
+                self:SetScript("OnUpdate", onUpdateCopy);
+                if onComplete then
+                    onComplete();
+                end
+            else
+                onProgress(currentValue);
+            end
+            -- self:SetValue(self.targetValue * progress);
+            -- onProgress(self.targetValue * progress);
+        end);
+    end
+
+    frame.StopAnimation = function(self)
+        if self.onUpdateCopy then
+            self:SetScript("OnUpdate", self.onUpdateCopy);
+        else
+            self:SetScript("OnUpdate", nil);
+        end
     end
 end

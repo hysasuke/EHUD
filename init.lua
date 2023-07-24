@@ -11,6 +11,7 @@ core.ECF = {}
 core.PF = {}
 core.EB = {}
 core.EDR = {}
+core.CT = {}
 core.config = {};
 core.config.dimensions = {
     playerFrame = {
@@ -208,12 +209,43 @@ EHUD.options = {
                 }
             }
         },
+        combatText = {
+            type = "group",
+            name = L["combatText"],
+            args = {
+                toggle = {
+                    type = "toggle",
+                    name = L["enable"],
+                    get = function()
+                        return EHUD.db.profile.combatText.enable
+                    end,
+                    set = function(info, value)
+                        EHUD.db.profile.combatText.enable = value
+                        core.CT:Toggle(value)
+                    end,
+                },
+                showBackground = {
+                    type = "toggle",
+                    name = L["showBackground"],
+                    get = function()
+                        return EHUD.db.profile.combatText.showBackground
+                    end,
+                    set = function(info, value)
+                        EHUD.db.profile.combatText.showBackground = value
+                        core.CT:ToggleBackground(value)
+                    end,
+                }
+            }
+        }
     }
 }
 
 
 local defaultConfigs = {
     profile = {
+        savedFramePoints = {
+
+        },
         playerFrame = {
             point = "CENTER",
             relativePoint = "CENTER",
@@ -254,7 +286,17 @@ local defaultConfigs = {
         },
         enhancedDragonRiding = {
             enable = true
-        }
+        },
+        combatText = {
+            enable = true,
+            showBackground = true,
+            point = "CENTER",
+            relativePoint = "CENTER",
+            xOfs = 0,
+            yOfs = 0,
+            containerWidth = core.config.dimensions.targetFrame.width,
+            containerHeight = core.config.dimensions.targetFrame.height,
+        },
     },
     class = {
         buffTracker = {
@@ -267,16 +309,7 @@ local defaultConfigs = {
 function SaveFramePoints(frame, type, name)
     local point, relativeTo, relativePoint, xOfs, yOfs = frame:GetPoint()
 
-    if type == "unitFrame" then
-        EHUD.db.profile[name] = {
-            point = point,
-            relativePoint = relativePoint,
-            xOfs = xOfs,
-            yOfs = yOfs,
-            containerWidth = frame:GetWidth(),
-            containerHeight = frame:GetHeight(),
-        }
-    elseif type == "buffTracker" then
+    if type == "buffTracker" then
         EHUD.db.class.buffTracker.trackers[name] = {
             point = point,
             relativePoint = relativePoint,
@@ -285,7 +318,20 @@ function SaveFramePoints(frame, type, name)
             containerWidth = frame:GetWidth(),
             containerHeight = frame:GetHeight(),
         }
+    else
+        EHUD.db.profile.savedFramePoints[name] = {
+            point = point,
+            relativePoint = relativePoint,
+            xOfs = xOfs,
+            yOfs = yOfs,
+            containerWidth = frame:GetWidth(),
+            containerHeight = frame:GetHeight(),
+        }
     end
+end
+
+function core:GetFramePoints(name)
+    return EHUD.db.profile.savedFramePoints[name]
 end
 
 local function handleFramePoints()
@@ -307,12 +353,15 @@ end
 function EHUD:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("EHUDDB", defaultConfigs, true)
     LibStub("AceConfig-3.0"):RegisterOptionsTable("EHUD", EHUD.options)
+    SLASH_RELOADUI1 = "/rl"; -- new slash command for reloading UI
+    SlashCmdList.RELOADUI = ReloadUI;
     self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("EHUD", "EHUD")
     handleFramePoints();
 
     _G["PlayerFrame"].feedbackFontHeight = EHUD.db.profile.playerFrame.hitIndicatorFontSize
     MoveBuiltInFramesMovable();
     core.FineTune:Initialize();
+    core.CT:Initialize();
     -- -- Copy buffTracker Data from profile to class
     -- if self.db.profile.buffTracker then
     --     self.db.class.buffTracker = self.db.profile.buffTracker
@@ -352,6 +401,10 @@ function EHUD:setEditMode(info, value)
 
     if core.BT then
         core.BT:ToggleEditMode(value)
+    end
+
+    if core.CT then
+        core.CT:ToggleEditMode(value)
     end
 end
 

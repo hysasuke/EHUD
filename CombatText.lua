@@ -187,7 +187,6 @@ function CT:HandleSpellSentEvent(frameIndex, castGUID, spellID, destName)
         destGUIDs = {},
         spellCastType = "cast"
     }
-    Debug("SpellSent: " .. castGUID, frameIndex)
 end
 
 function CT:HandleStartCastEvent(castGUID, spellId, spellCastType)

@@ -2,7 +2,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("EHUD")
 
 
 local pveFrame = _G["PVEFrame"];
-
 local function generateRewardDetails()
     local rewardDetails = GetCurrentWeekRewardDetails();
     local output = {};
@@ -22,34 +21,39 @@ local function generateTeleportButton(frame, challengeModeID)
     button:SetScript("OnEnter", function()
         frame:OnEnter()
     end)
-    if (not button.SetBackdrop) then Mixin(button, BackdropTemplateMixin) end
-    button:SetScript("OnUpdate", function()
-        local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
-        local spellName = GetSpellInfo(spellID);
-        local spellKnown = IsSpellKnown(spellID);
-        local colors = {
-            known = { r = 0, g = 1, b = 0, a = 1 },
-            unkown = { r = 0.5, g = 0.5, b = 0.5, a = 1 },
-            cd = { r = 1, g = 0, b = 0, a = 1 },
-        }
-        local displayColor = spellKnown and colors.known or colors.unkown;
-        if (spellKnown) then
-            local start, duration, enabled = GetSpellCooldown(spellID);
-            if (start > 0 and duration > 0) then
-                displayColor = colors.cd;
-            end
-        end
-        button.backdrop = {
-            edgeFile = "Interface\\Buttons\\WHITE8x8",
-            tileEdge = false,
-            edgeSize = 1,
-            insets = { left = 1, right = 1, top = 1, bottom = 1 },
-        }
-        button:SetAttribute("type", "spell");
-        button:SetAttribute("spell", spellName);
-        button:SetBackdrop(button.backdrop)
-        button:SetBackdropBorderColor(displayColor.r, displayColor.g, displayColor.b, displayColor.a)
+
+    button:SetScript("OnLeave", function()
+        GameTooltip:Hide()
     end)
+
+    if (not button.SetBackdrop) then Mixin(button, BackdropTemplateMixin) end
+    -- button:SetScript("OnUpdate", function()
+    local spellID = GetTeleportSpellIDByChallengeModeID(challengeModeID);
+    local spellName = GetSpellInfo(spellID);
+    local spellKnown = IsSpellKnown(spellID);
+    local colors = {
+        known = { r = 0, g = 1, b = 0, a = 1 },
+        unkown = { r = 0.5, g = 0.5, b = 0.5, a = 1 },
+        cd = { r = 1, g = 0, b = 0, a = 1 },
+    }
+    local displayColor = spellKnown and colors.known or colors.unkown;
+    if (spellKnown) then
+        local start, duration, enabled = GetSpellCooldown(spellID);
+        if (start > 0 and duration > 0) then
+            displayColor = colors.cd;
+        end
+    end
+    button.backdrop = {
+        edgeFile = "Interface\\Buttons\\WHITE8x8",
+        tileEdge = false,
+        edgeSize = 1,
+        insets = { left = 1, right = 1, top = 1, bottom = 1 },
+    }
+    button:SetAttribute("type", "spell");
+    button:SetAttribute("spell", spellName);
+    button:SetBackdrop(button.backdrop)
+    button:SetBackdropBorderColor(displayColor.r, displayColor.g, displayColor.b, displayColor.a)
+    -- end)
 
 
 

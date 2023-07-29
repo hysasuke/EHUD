@@ -71,15 +71,17 @@ downArrowButton:GetNormalTexture():SetRotation(math.rad(-90))
 
 
 updateEventFrame:HookScript("OnUpdate", function()
-    for name, frame in pairs(core.frames) do
-        local movable = frame:IsMovable();
-        if movable then
-            local left = frame:GetLeft();
-            local bottom = frame:GetBottom();
-            local leftFormatted = string.format("%.1f", left);
-            local bottomFormatted = string.format("%.1f", bottom);
-            coordText:SetText("X: " .. leftFormatted .. " Y: " .. bottomFormatted)
-            FineTune:SetUpArrowFunctions(frame);
+    if settingDialog:IsShown() then
+        for name, frame in pairs(core.frames) do
+            local movable = frame:IsMovable();
+            if movable then
+                local left = frame:GetLeft();
+                local bottom = frame:GetBottom();
+                local leftFormatted = string.format("%.1f", left);
+                local bottomFormatted = string.format("%.1f", bottom);
+                coordText:SetText("X: " .. leftFormatted .. " Y: " .. bottomFormatted)
+                FineTune:SetUpArrowFunctions(frame);
+            end
         end
     end
 end)

@@ -1,4 +1,4 @@
-## Interface: 100105
+## Interface: 110000
 ## Title: |cff00a0e9EHUD|r
 ## Notes: 
 ## Author: Snowpanther
@@ -30,9 +30,9 @@ BuffTracker.lua
 UnitFrame.lua
 PlayerFrame.lua
 TargetFrame.lua
-EnhancedMythicPlus.lua
+# EnhancedMythicPlus.lua
 FineTuneHUD.lua
 EnhancedChat.lua
-EnhancedBag.lua
+# EnhancedBag.lua
 EnhancedDragonRiding.lua
 CombatText.lua

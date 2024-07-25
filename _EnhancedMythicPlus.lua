@@ -66,6 +66,7 @@ end
 
 
 local function mythicPlusFrameOnShow(frame, event)
+    debug("onshow")
     local children = { frame:GetChildren() };
     local mythicPlusDetails = GetMythicPlusScoreDetails("player");
     for key, value in pairs(children) do
@@ -124,6 +125,7 @@ local function mythicPlusFrameOnShow(frame, event)
     end
 end
 
+
 pveFrame:HookScript("OnUpdate", function(self)
     local challengesFrame = nil
     if pveFrame.selectedTab == 3 and EHUD.db.profile.enhancedMythicPlusDisplay.enable then
@@ -140,9 +142,9 @@ pveFrame:HookScript("OnUpdate", function(self)
         local weeklyChestFrame = challengesFrame.WeeklyInfo.Child.WeeklyChest;
         if not weeklyChestFrame.scriptSetUp then
             weeklyChestFrame:HookScript("OnEnter", function()
-                local rewardDetails = generateRewardDetails();
-                GameTooltip:AddLine(table.concat(rewardDetails, "\n"));
-                GameTooltip:Show();
+                -- local rewardDetails = generateRewardDetails();
+                -- GameTooltip:AddLine(table.concat(rewardDetails, "\n"));
+                -- GameTooltip:Show();
             end)
             weeklyChestFrame.scriptSetUp = true;
         end

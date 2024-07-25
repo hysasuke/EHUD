@@ -6,11 +6,11 @@ function Debug(...)
         local chatName = GetChatWindowInfo(i);
         if chatName == "Debug" then
             debugChatFrame = Chat_GetChatFrame(i);
-            break;
+            break
         end
     end
     if debugChatFrame then
-        local args = { ... };
+        local args = {...};
         local output = "";
         for _, value in pairs(args) do
             if type(value) == "table" then
@@ -22,7 +22,7 @@ function Debug(...)
                 if not value then
                     value = "nil";
                 end
-                output = output .. tostring(value) .. " ";
+                output = output .. tostring(value) .. " \n";
             end
         end
         debugChatFrame:AddMessage(output);
@@ -136,15 +136,15 @@ function GetMythicPlusScoreDetails(unit)
                 level = affixScore[1].level,
                 time = affixScore[1].durationSec,
                 overtime = affixScore[1].overTime,
-                name = affixScore[1].name,
+                name = affixScore[1].name
             },
             tyrannical = {
                 score = affixScore[2].score,
                 level = affixScore[2].level,
                 time = affixScore[2].durationSec,
                 overtime = affixScore[2].overTime,
-                name = affixScore[2].name,
-            },
+                name = affixScore[2].name
+            }
         }
     end
     return output;
@@ -226,9 +226,13 @@ function GetPlayerSpecs()
 end
 
 function HandleItemLink(itemLink)
-    if not itemLink then return {} end
+    if not itemLink then
+        return {}
+    end
     local itemString = string.match(itemLink, "item[%-?%d:]+");
-    if not itemString then return {} end
+    if not itemString then
+        return {}
+    end
     local itemSplit = string:split(itemString, ":");
 
     -- dump itemSplit
@@ -240,29 +244,29 @@ function HandleItemLink(itemLink)
         id = enchantItemID,
         enchantID = enchantID,
         name = enchantItemID and select(1, GetItemInfo(enchantItemID)),
-        icon = enchantItemID and select(10, GetItemInfo(enchantItemID)),
+        icon = enchantItemID and select(10, GetItemInfo(enchantItemID))
     } or nil;
 
     local itemGem1 = itemSplit[4] ~= "nil" and {
         id = itemSplit[4],
         name = select(1, GetItemInfo(itemSplit[4])),
-        icon = select(10, GetItemInfo(itemSplit[4])),
+        icon = select(10, GetItemInfo(itemSplit[4]))
     } or nil
 
     local itemGem2 = itemSplit[5] ~= "nil" and {
         id = itemSplit[5],
         name = select(1, GetItemInfo(itemSplit[5])),
-        icon = select(10, GetItemInfo(itemSplit[5])),
+        icon = select(10, GetItemInfo(itemSplit[5]))
     } or nil;
     local itemGem3 = itemSplit[6] ~= "nil" and {
         id = itemSplit[6],
         name = select(1, GetItemInfo(itemSplit[6])),
-        icon = select(10, GetItemInfo(itemSplit[6])),
+        icon = select(10, GetItemInfo(itemSplit[6]))
     } or nil;
     local itemGem4 = itemSplit[7] ~= "nil" and {
         id = itemSplit[7],
         name = select(1, GetItemInfo(itemSplit[7])),
-        icon = select(10, GetItemInfo(itemSplit[7])),
+        icon = select(10, GetItemInfo(itemSplit[7]))
     } or nil;
 
     local itemName = GetItemInfo(itemID);
@@ -295,7 +299,9 @@ function string:split(inputstr, sep)
             table.insert(t, "nil")
         end
 
-        if s == "" then return t end
+        if s == "" then
+            return t
+        end
     end
 end
 
@@ -340,7 +346,7 @@ function GetSpellSchoolColor(spellSchool)
         [8] = CreateColorFromBytes(77, 255, 77, 1),
         [16] = CreateColorFromBytes(128, 255, 255, 1),
         [32] = CreateColorFromBytes(128, 128, 255, 1),
-        [64] = CreateColorFromBytes(255, 128, 255, 1),
+        [64] = CreateColorFromBytes(255, 128, 255, 1)
     }
     color[3] = color[1];
     color[5] = color[1];
@@ -369,8 +375,6 @@ function GetSpellSchoolColor(spellSchool)
     color[124] = color[4];
     color[126] = color[2];
     color[127] = color[1];
-
-
 
     return color[spellSchool];
 end

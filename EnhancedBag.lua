@@ -4,7 +4,6 @@ local _, core = ...; -- Namespace
 local EB = {};
 core.EB = EB;
 
-
 local function GetItemContainerLocation(bagID, itemIndex)
     local numerOfSlots = C_Container.GetContainerNumSlots(bagID);
     return {
@@ -18,7 +17,9 @@ local function GetActualItemLevel(bagIndex, slotIndex)
     local tooltipData = C_TooltipInfo.GetBagItem(bagIndex, slotIndex)
     for j = 2, 3 do
         local msg = tooltipData.lines[j] and tooltipData.lines[j].leftText
-        if (not msg) then break end
+        if (not msg) then
+            break
+        end
         local match = string.match(msg, ITEM_LEVEL:gsub("%%d", "(%%d+)"))
         if (match) then
             itemLevel = tonumber(match)
@@ -37,28 +38,27 @@ local function HandleBagItems(bagID)
         local numerOfSlots = C_Container.GetContainerNumSlots(i);
         if (numerOfSlots > 0) then
             for slotIndex = 1, numerOfSlots do
-                local containerItemInfo =
-                    C_Container.GetContainerItemInfo(i, slotIndex);
+                local containerItemInfo = C_Container.GetContainerItemInfo(i, slotIndex);
                 local containerPos = GetItemContainerLocation(i, slotIndex)
-                local currentFrame = _G
-                    ["ContainerFrame" .. containerPos.bagIndex .. "Item" .. containerPos.itemIndex];
+                local currentFrame = _G["ContainerFrame" .. containerPos.bagIndex .. "Item" .. containerPos.itemIndex];
+                Debug(_G["ContainerFrame" .. containerPos.bagIndex]:GetChildren()[1])
                 if containerItemInfo then
                     local itemLink = containerItemInfo.hyperlink;
                     local itemInfo = HandleItemLink(itemLink);
 
-
                     -- Item level font string
                     currentFrame.itemLevelText = currentFrame.itemLevelText or
-                        currentFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                                                     currentFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
                     currentFrame.itemLevelText:SetFont(currentFrame.itemLevelText:GetFont(), 12, "OUTLINE");
                     currentFrame.itemLevelText:SetPoint("BOTTOMRIGHT", currentFrame, "BOTTOMRIGHT", 0, 0);
                     -- BOE Indicator
                     currentFrame.BOEIndicator = currentFrame.BOEIndicator or
-                        currentFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+                                                    currentFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
                     currentFrame.BOEIndicator:SetFont(currentFrame.BOEIndicator:GetFont(), 12, "OUTLINE");
                     currentFrame.BOEIndicator:SetPoint("TOPLEFT", currentFrame, "TOPLEFT", 0, 0);
 
-                    if (not containerItemInfo.isBound and (itemInfo.itemType == Enum.ItemClass.Armor or itemInfo.itemType == Enum.ItemClass.Weapon)) then
+                    if (not containerItemInfo.isBound and
+                        (itemInfo.itemType == Enum.ItemClass.Armor or itemInfo.itemType == Enum.ItemClass.Weapon)) then
                         local r, g, b = GetItemQualityColor(itemInfo.itemQuality);
                         currentFrame.BOEIndicator:SetText("BOE");
                         currentFrame.BOEIndicator:SetTextColor(r, g, b)
@@ -93,8 +93,7 @@ local function CalculateSellPrice()
     local total = 0;
     for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
-            local itemInfo =
-                C_Container.GetContainerItemInfo(bag, slot);
+            local itemInfo = C_Container.GetContainerItemInfo(bag, slot);
             if itemInfo then
                 if (itemInfo.quality == Enum.ItemQuality.Poor and not itemInfo.noValue) then
                     local sellPrice = select(11, GetItemInfo(itemInfo.itemID));
@@ -109,8 +108,7 @@ end
 local function HandleSellTrash()
     for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
-            local itemInfo =
-                C_Container.GetContainerItemInfo(bag, slot);
+            local itemInfo = C_Container.GetContainerItemInfo(bag, slot);
             if itemInfo then
                 if (itemInfo.quality == Enum.ItemQuality.Poor and not itemInfo.noValue) then
                     C_Container.UseContainerItem(bag, slot)
@@ -124,7 +122,7 @@ local function HandleAutoSellTrashButton()
     local merchantFrame = _G["MerchantFrame"];
     local repairButton = _G["MerchantGuildBankRepairButton"];
     local sellButton = merchantFrame.EHUDAutoSellTrashButton or
-        CreateFrame("Button", "EHUDAutoSellTrashButton", MerchantFrame, "SecureActionButtonTemplate");
+                           CreateFrame("Button", "EHUDAutoSellTrashButton", MerchantFrame, "SecureActionButtonTemplate");
     merchantFrame.EHUDAutoSellTrashButton = sellButton;
     sellButton:SetSize(repairButton:GetSize());
     sellButton:SetPoint("TOPLEFT", repairButton, "TOPRIGHT", 10, 0);

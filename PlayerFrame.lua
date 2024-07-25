@@ -6,20 +6,25 @@ core.PF = PF;
 local media = LibStub("LibSharedMedia-3.0")
 
 local playerSecondaryPowerTypes = {
-    ROGUE = { 4 },
-    DRUID = { 4 },
-    DEATHKNIGHT = { 6 },
-    WARLOCK = { 7 },
-    PALADIN = { 9 },
-    MONK = { 12 },
-    MAGE = { 16 },
-    EVOKER = { 19 }
+    ROGUE = {4},
+    DRUID = {4},
+    DEATHKNIGHT = {6},
+    WARLOCK = {7},
+    PALADIN = {9},
+    MONK = {12},
+    MAGE = {16},
+    EVOKER = {19}
 }
 
 -- Player frame
 local playerFrame = _G["PlayerFrame"];
-local healthBar = playerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar
-local defaultHealthBarColor = { r = 1, g = 1, b = 1, a = 1 }
+local healthBar = playerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer.HealthBar;
+local defaultHealthBarColor = {
+    r = 1,
+    g = 1,
+    b = 1,
+    a = 1
+}
 
 function PF:SetHealthBarColor(color)
     healthBar:SetStatusBarDesaturated(true)
@@ -29,7 +34,12 @@ end
 function PF:GetPlayerClassColor()
     local _, englishClass = UnitClass("player")
     local r, g, b, hex = GetClassColor(englishClass)
-    return { r = r, g = g, b = b, a = 1 }
+    return {
+        r = r,
+        g = g,
+        b = b,
+        a = 1
+    }
 end
 
 function PF:ToggleHealthBarColor(value)
@@ -106,7 +116,6 @@ end
 -- onePartialPowerBackground:SetAllPoints(partialPowerBar)
 -- onePartialPowerBackground:SetColorTexture(0, 0, 0, 0.8)
 -- onePartialPowerBackground:SetDrawLayer("BACKGROUND", 2)
-
 
 -- -- _G["PlayerFrame"]:SetScript("OnEvent", nil);
 -- -- _G["PlayerFrame"]:Hide();

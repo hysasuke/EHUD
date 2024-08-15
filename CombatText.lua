@@ -5,7 +5,6 @@ local CT = {};
 
 core.CT = CT;
 
-
 local function CreateCombatTextFrame()
     local f = CreateFrame("Frame", "CombatTextFrame", UIParent);
     f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
@@ -21,17 +20,10 @@ local function CreateCombatTextFrame()
     f:SetScript("OnEvent", CT.COMBAT_LOG_EVENT_UNFILTERED);
     f:SetSize(300, 100);
 
-    local savedFramePoints = core:GetFramePoints(
-        "combatTextFrame"
-    );
+    local savedFramePoints = core:GetFramePoints("combatTextFrame");
     if savedFramePoints then
-        f:SetPoint(
-            savedFramePoints.point,
-            savedFramePoints.relativeTo,
-            savedFramePoints.relativePoint,
-            savedFramePoints.xOfs,
-            savedFramePoints.yOfs
-        );
+        f:SetPoint(savedFramePoints.point, savedFramePoints.relativeTo, savedFramePoints.relativePoint,
+            savedFramePoints.xOfs, savedFramePoints.yOfs);
     else
         f:SetPoint("CENTER", UIParent, "CENTER", 0, 0);
     end
@@ -41,10 +33,7 @@ local function CreateCombatTextFrame()
     f:SetScript("OnDragStart", f.StartMoving);
     f:SetScript("OnDragStop", function()
         f:StopMovingOrSizing()
-        SaveFramePoints(f,
-            "combatText",
-            "combatTextFrame"
-        );
+        SaveFramePoints(f, "combatText", "combatTextFrame");
     end);
 
     -- Background
@@ -115,7 +104,6 @@ local function CreateCombatTextFrame()
         frame.healText:SetJustifyV("MIDDLE");
         frame.healText:SetTextColor(0, 1, 0, 1);
 
-
         -- Casting bar
         frame.castingBar = CreateFrame("StatusBar", "CombatTextFrame" .. i .. "CastingBar", frame);
         frame.castingBar:SetPoint("TOPLEFT", frame, "TOPLEFT", 25, 0);
@@ -123,7 +111,7 @@ local function CreateCombatTextFrame()
         frame.castingBar:SetStatusBarTexture("UI-CastingBar-Filling-Background");
         frame.castingBar:SetFrameStrata("HIGH");
         frame.castingBar:SetFrameLevel(1);
-        --Set spark
+        -- Set spark
         frame.castingBar.Spark = frame.castingBar:CreateTexture(nil, "OVERLAY");
         frame.castingBar.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark");
         frame.castingBar.Spark:SetBlendMode("ADD");
@@ -174,7 +162,7 @@ function CT:FindNextAvailableLogIndex()
 end
 
 function CT:HandleSpellSentEvent(frameIndex, castGUID, spellID, destName)
-    local spellName = GetSpellInfo(spellID);
+    local spellName = C_Spell.GetSpellName(spellID);
     local frame = CT.frame.framePool[frameIndex];
     frame.logData = {
         eventType = "SPELL_SENT",
@@ -198,7 +186,7 @@ function CT:HandleStartCastEvent(castGUID, spellId, spellCastType)
     frame.logData.spellCastType = spellCastType
     local destName = frame.logData.destName;
     local spellName = frame.logData.spellName;
-    frame.icon:SetTexture(GetSpellTexture(spellId));
+    frame.icon:SetTexture(C_Spell.GetSpellTexture(spellId));
     if destName then
         frame.generalInfoText:SetText(spellName .. " -> " .. destName);
     else
@@ -269,7 +257,9 @@ function CT:FindTargetFrameByEvent(eventType, castGUID, spellId, targetCastType)
     for i = 1, 6 do
         local frame = self.frame.framePool[i];
         -- print(frame.logData.spellName, frame.logData.destGUID)
-        if (frame.logData ~= nil and frame.logData.eventType == eventType and (frame.logData.castGUID == castGUID or frame.logData.spellId == spellId or frame.logData.spellName == spellId)) then
+        if (frame.logData ~= nil and frame.logData.eventType == eventType and
+            (frame.logData.castGUID == castGUID or frame.logData.spellId == spellId or frame.logData.spellName ==
+                spellId)) then
             if not targetCastType or (targetCastType and frame.logData.spellCastType == targetCastType) then
                 if (index == -1 or frame.order < outputFrame.order) then
                     outputFrame = frame;
@@ -353,13 +343,13 @@ function CT:HandleSpellHealEvent(spellName, spellSchool, amount, isCritical, des
     end
 end
 
-local FILTERED_SPELL_ID_LIST = { 397374 }
+local FILTERED_SPELL_ID_LIST = {397374}
 
 function CT:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
     if event == "COMBAT_LOG_EVENT_UNFILTERED" then
-        local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName,
-        destFlags, destRaidFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical =
-            CombatLogGetCurrentEventInfo();
+        local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID,
+            destName, destFlags, destRaidFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted,
+            blocked, absorbed, critical = CombatLogGetCurrentEventInfo();
 
         -- if (eventType == "SPELL_CAST_START") then
         --     if (sourceGUID == UnitGUID("player") or sourceGUID == UnitGUID("pet")) then
@@ -422,8 +412,6 @@ function CT:COMBAT_LOG_EVENT_UNFILTERED(event, ...)
             CT:HandleCastSuccessEvent(castGUID, spellID, true);
         end
     end
-
-
 
     if event == "UNIT_SPELLCAST_CHANNEL_START" then
         local unit, castGUID, spellID = ...;
